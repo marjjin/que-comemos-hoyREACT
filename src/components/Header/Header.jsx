@@ -3,7 +3,7 @@ export function Header() {
     <header>
       <nav>
         <img
-          src="./public/QCH_logo_transparente.png"
+          src="/QCH_logo_transparente.png"
           alt="logo Que Comemos Hoy"
           className="LogoNav"
         />
