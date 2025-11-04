@@ -1,0 +1,64 @@
+header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #ffffff 0%, #fffbf0 100%);
+  padding: 1rem 2rem;
+  width: 100%;
+  min-height: 100px;
+  position: relative;
+}
+
+nav::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #f8ba00, transparent);
+}
+
+.LogoNav {
+  width: 80px;
+  height: 80px;
+  filter: drop-shadow(0 4px 10px rgba(248, 186, 0, 0.3));
+  transition: all 0.3s ease;
+  animation: floatLogo 3s ease-in-out infinite;
+}
+
+.LogoNav:hover {
+  transform: scale(1.1) rotate(5deg);
+  filter: drop-shadow(0 6px 15px rgba(248, 186, 0, 0.5));
+}
+
+@keyframes floatLogo {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@media (max-width: 768px) {
+  nav {
+    min-height: 80px;
+    padding: 0.8rem 1rem;
+  }
+
+  .LogoNav {
+    width: 60px;
+    height: 60px;
+  }
+}

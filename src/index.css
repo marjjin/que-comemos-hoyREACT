@@ -1,0 +1,14 @@
+@import url("./components/Header/Header.css");
+@import url("./components/Main/Main.css");
+@import url("./components/Footer/Footer.css");
+@import url("/src/components/Loader/Loades.css");
+
+:root {
+  --primary-color: rgb(248, 186, 0);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}

@@ -1,0 +1,155 @@
+footer {
+  background: linear-gradient(135deg, #f8ba00 0%, #ff9500 100%);
+  text-align: center;
+  padding: 3rem 2rem 2rem;
+  color: white;
+  box-shadow: 0 -8px 30px rgba(248, 186, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+  margin-top: 4rem;
+}
+
+footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, white, transparent);
+}
+
+footer::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+footer a {
+  color: white;
+  text-decoration: none;
+  font-weight: 700;
+  padding: 0 0.5rem;
+  transition: all 0.3s ease;
+  display: inline-block;
+  position: relative;
+}
+
+footer a::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  width: 100%;
+  height: 2px;
+  background: white;
+  transition: transform 0.3s ease;
+}
+
+footer a:hover {
+  transform: translateY(-2px);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+footer a:hover::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+.pie {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.pie p {
+  padding: 0.5rem 0;
+  margin: 0.3rem 0;
+  animation: fadeInUp 0.6s ease forwards;
+  opacity: 0;
+}
+
+.pie p:nth-child(1) {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  animation-delay: 0.1s;
+}
+
+.pie p:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.pie p:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.pie p:nth-child(4) {
+  animation-delay: 0.4s;
+}
+.pie p:nth-child(5) {
+  animation-delay: 0.5s;
+}
+
+.pie h4 {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid rgba(255, 255, 255, 0.3);
+  font-size: 0.95rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.pie h5 {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  opacity: 0.8;
+  font-style: italic;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  footer {
+    padding: 2rem 1.5rem 1.5rem;
+  }
+
+  .pie {
+    font-size: 0.9rem;
+  }
+
+  .pie p:nth-child(1) {
+    font-size: 1.2rem;
+  }
+
+  .pie h4 {
+    font-size: 0.85rem;
+  }
+
+  .pie h5 {
+    font-size: 0.75rem;
+  }
+}
