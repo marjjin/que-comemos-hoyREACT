@@ -100,9 +100,12 @@ main::before {
 
 .productos-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
   padding: 1rem 0;
+  justify-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .producto-card {
@@ -117,6 +120,8 @@ main::before {
   flex-direction: column;
   border: 2px solid transparent;
   animation: scaleIn 0.5s ease;
+  width: 100%;
+  max-width: 350px;
 }
 
 @keyframes scaleIn {
@@ -238,6 +243,52 @@ main::before {
 
 .producto-card:hover .producto-precio {
   animation: pulse 1s ease infinite;
+}
+
+/* Botón Agregar al Carrito */
+.btn-agregar-carrito {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, #f8ba00 0%, #ff9500 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+  box-shadow: 0 4px 15px rgba(248, 186, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-agregar-carrito::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn-agregar-carrito:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.btn-agregar-carrito:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(248, 186, 0, 0.5);
+}
+
+.btn-agregar-carrito:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(248, 186, 0, 0.3);
 }
 
 .loading-container,

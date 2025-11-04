@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js"; // Cliente de Supabase par
 import { useEffect, useState } from "react"; // Hooks de React para manejar estado y efectos
 import "./Main.css"; // Estilos del componente
 import { Slice } from "../Slice/Slice";
+import { useCarrito } from "../../context/CarritoContext";
 
 // Inicialización del cliente de Supabase con las credenciales
 // Se coloca fuera del componente para evitar reinicializaciones innecesarias
@@ -13,19 +14,29 @@ const supabase = createClient(
 
 // Componente ProductCard: Muestra la información de un producto individual
 // Recibe como prop un objeto 'producto' con todos los datos del producto
-const ProductCard = ({ producto }) => (
-  <article className="producto-card">
-    <h3 className="producto-nombre">{producto.producto}</h3>
-    <img
-      src={producto.imagen}
-      alt={producto.producto}
-      className="producto-img"
-      loading="lazy" // Optimización: carga diferida de imágenes
-    />
-    <p className="producto-descripcion">{producto.descripcion}</p>
-    <p className="producto-precio">${producto.precio}</p>
-  </article>
-);
+const ProductCard = ({ producto }) => {
+  const { agregarAlCarrito } = useCarrito();
+
+  return (
+    <article className="producto-card">
+      <h3 className="producto-nombre">{producto.producto}</h3>
+      <img
+        src={producto.imagen}
+        alt={producto.producto}
+        className="producto-img"
+        loading="lazy" // Optimización: carga diferida de imágenes
+      />
+      <p className="producto-descripcion">{producto.descripcion}</p>
+      <p className="producto-precio">${producto.precio}</p>
+      <button 
+        className="btn-agregar-carrito"
+        onClick={() => agregarAlCarrito(producto)}
+      >
+        🛒 Agregar al Carrito
+      </button>
+    </article>
+  );
+};
 
 // Componente CategoriaSection: Agrupa productos por categoría
 // Recibe: categoria (string) y productos (array de productos de esa categoría)
