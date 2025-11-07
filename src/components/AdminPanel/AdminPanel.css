@@ -1,40 +1,128 @@
 /* Panel de Administración - Diseño Moderno con Pestañas */
 
 .admin-panel-container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 2rem auto;
   padding: 0;
-  background: #f8f9fa;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
   min-height: 600px;
+  overflow: hidden;
+}
+
+/* Header del Panel */
+.admin-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-header::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 300px;
+  height: 300px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  animation: float 6s ease-in-out infinite;
+}
+
+.admin-header::after {
+  content: "";
+  position: absolute;
+  bottom: -30%;
+  left: -5%;
+  width: 200px;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  animation: float 8s ease-in-out infinite reverse;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) translateX(0);
+  }
+  50% {
+    transform: translateY(-20px) translateX(20px);
+  }
+}
+
+.admin-header-content {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.admin-header-icon {
+  font-size: 3.5rem;
+  background: rgba(255, 255, 255, 0.2);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.admin-header-text {
+  flex: 1;
 }
 
 .admin-title {
-  text-align: center;
-  padding: 2rem;
   margin: 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  border-radius: 16px 16px 0 0;
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 700;
   letter-spacing: 0.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.admin-subtitle {
+  margin: 0.5rem 0 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.3px;
 }
 
 /* Navegación por Pestañas */
 .admin-tabs {
   display: flex;
-  background: #fff;
-  border-bottom: 2px solid #e0e0e0;
+  background: #f8f9fa;
+  border-bottom: 3px solid #e0e0e0;
   padding: 0;
   margin: 0;
   overflow-x: auto;
+  position: relative;
+}
+
+.admin-tabs::-webkit-scrollbar {
+  height: 4px;
+}
+
+.admin-tabs::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.admin-tabs::-webkit-scrollbar-thumb {
+  background: #667eea;
+  border-radius: 2px;
 }
 
 .admin-tab {
   flex: 1;
-  padding: 1.2rem 1.5rem;
+  min-width: 180px;
+  padding: 1.3rem 1.8rem;
   border: none;
   background: transparent;
   cursor: pointer;
@@ -42,19 +130,41 @@
   font-weight: 600;
   color: #666;
   transition: all 0.3s ease;
-  border-bottom: 3px solid transparent;
+  border-bottom: 4px solid transparent;
   white-space: nowrap;
+  position: relative;
+}
+
+.admin-tab::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  width: 80%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #667eea, transparent);
+  transition: transform 0.3s ease;
 }
 
 .admin-tab:hover {
-  background: #f8f9fa;
+  background: #ffffff;
   color: #667eea;
+}
+
+.admin-tab:hover::before {
+  transform: translateX(-50%) scaleX(1);
 }
 
 .admin-tab.active {
   color: #667eea;
   border-bottom-color: #667eea;
-  background: #f8f9fa;
+  background: #ffffff;
+  box-shadow: 0 -2px 10px rgba(102, 126, 234, 0.1);
+}
+
+.admin-tab.active::before {
+  transform: translateX(-50%) scaleX(1);
 }
 
 /* Contenido de las Pestañas */
@@ -527,9 +637,26 @@
     border-radius: 12px;
   }
 
-  .admin-title {
-    font-size: 1.5rem;
+  .admin-header {
     padding: 1.5rem;
+  }
+
+  .admin-header-content {
+    gap: 1rem;
+  }
+
+  .admin-header-icon {
+    font-size: 2.5rem;
+    width: 60px;
+    height: 60px;
+  }
+
+  .admin-title {
+    font-size: 1.6rem;
+  }
+
+  .admin-subtitle {
+    font-size: 0.9rem;
   }
 
   .admin-tabs {
@@ -538,7 +665,8 @@
   }
 
   .admin-tab {
-    padding: 1rem;
+    min-width: 150px;
+    padding: 1rem 1.2rem;
     font-size: 0.9rem;
   }
 
@@ -751,6 +879,90 @@
   border-radius: 16px;
   font-size: 0.85rem;
   color: #555;
+}
+
+/* Footer del Admin Panel */
+.admin-footer {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 0 0 20px 20px;
+  margin-top: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.5),
+    transparent
+  );
+}
+
+.admin-footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2.5rem;
+  color: white;
+  position: relative;
+  z-index: 1;
+}
+
+.admin-footer-left {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.admin-footer-left .footer-icon {
+  font-size: 1.3rem;
+  animation: rotate 3s linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.admin-footer-right {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+/* Responsive Admin Footer */
+@media (max-width: 768px) {
+  .admin-footer-content {
+    flex-direction: column;
+    gap: 0.8rem;
+    padding: 1.2rem 1.5rem;
+    text-align: center;
+  }
+
+  .admin-footer-left,
+  .admin-footer-right {
+    justify-content: center;
+  }
+
+  .admin-footer-left {
+    font-size: 0.9rem;
+  }
+
+  .admin-footer-right {
+    font-size: 0.85rem;
+  }
 }
 
 /* Responsive para FAQs */

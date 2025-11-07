@@ -3,7 +3,7 @@ header {
   top: 0;
   z-index: 1000;
   background: white;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
 }
 
 nav {
@@ -11,50 +11,136 @@ nav {
   justify-content: space-between;
   align-items: center;
   background: linear-gradient(135deg, #ffffff 0%, #fffbf0 100%);
-  padding: 1rem 2rem;
+  padding: 1.2rem 2.5rem;
   width: 100%;
-  min-height: 100px;
+  min-height: 90px;
   position: relative;
+  gap: 2rem;
 }
 
 nav::after {
   content: "";
   position: absolute;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80%;
+  left: 0;
+  width: 100%;
   height: 3px;
-  background: linear-gradient(90deg, transparent, #f8ba00, transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #f8ba00 20%,
+    #f8ba00 80%,
+    transparent
+  );
 }
 
-/* Contenedor vacío para mantener el logo centrado */
-.nav-spacer {
-  width: 60px;
+/* Brand Section */
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+  min-width: 250px;
 }
 
 .LogoNav {
-  width: 80px;
-  height: 80px;
-  filter: drop-shadow(0 4px 10px rgba(248, 186, 0, 0.3));
+  width: 70px;
+  height: 70px;
+  filter: drop-shadow(0 3px 8px rgba(248, 186, 0, 0.3));
   transition: all 0.3s ease;
-  animation: floatLogo 3s ease-in-out infinite;
-  margin: 0 auto;
 }
 
 .LogoNav:hover {
-  transform: scale(1.1) rotate(5deg);
-  filter: drop-shadow(0 6px 15px rgba(248, 186, 0, 0.5));
+  transform: scale(1.05) rotate(3deg);
+  filter: drop-shadow(0 5px 12px rgba(248, 186, 0, 0.5));
 }
 
-@keyframes floatLogo {
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.brand-name {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #f8ba00 0%, #ff9500 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 0.5px;
+}
+
+.brand-tagline {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
+}
+
+/* Info Section */
+.nav-info {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  flex-grow: 1;
+  justify-content: center;
+}
+
+/* Actions Section */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 250px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 25px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border: none;
+  font-family: inherit;
+}
+
+.info-item.info-clickable {
+  cursor: pointer;
+}
+
+.info-item.info-clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(248, 186, 0, 0.3);
+  background: linear-gradient(135deg, #f8ba00 0%, #ff9500 100%);
+}
+
+.info-item.info-clickable:hover .info-text,
+.info-item.info-clickable:hover .info-icon {
+  color: white;
+}
+
+.info-item.info-clickable:active {
+  transform: translateY(0);
+}
+
+.info-item:not(.info-clickable):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(248, 186, 0, 0.2);
+}
+
+.info-icon {
+  font-size: 1.3rem;
+}
+
+.info-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #333;
 }
 
 /* Botón flotante del carrito */
@@ -116,17 +202,30 @@ nav::after {
 
 @media (max-width: 768px) {
   nav {
-    min-height: 80px;
-    padding: 0.8rem 1rem;
+    min-height: 70px;
+    padding: 1rem 1.2rem;
+    gap: 1rem;
   }
 
-  .nav-spacer {
-    width: 50px;
+  .nav-brand {
+    gap: 0.6rem;
   }
 
   .LogoNav {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
+  }
+
+  .brand-name {
+    font-size: 1.1rem;
+  }
+
+  .brand-tagline {
+    font-size: 0.75rem;
+  }
+
+  .nav-info {
+    display: none;
   }
 
   .carrito-flotante {
@@ -139,5 +238,30 @@ nav::after {
     width: 24px;
     height: 24px;
     font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  nav {
+    padding: 0.8rem 1rem;
+    gap: 0.8rem;
+  }
+
+  .brand-text {
+    gap: 0.1rem;
+  }
+
+  .brand-name {
+    font-size: 1rem;
+  }
+
+  .brand-tagline {
+    display: none;
+  }
+
+  .carrito-flotante {
+    width: 45px;
+    height: 45px;
+    font-size: 1.3rem;
   }
 }

@@ -575,7 +575,18 @@ export function AdminPanel() {
   // Incluye: formulario de producto, gestión de categorías, filtro y edición/eliminación de productos, gestión de slice
   return (
     <section className="admin-panel-container">
-      <h1 className="admin-title">Panel de Administración</h1>
+      {/* Header del Panel */}
+      <div className="admin-header">
+        <div className="admin-header-content">
+          <div className="admin-header-icon">⚙️</div>
+          <div className="admin-header-text">
+            <h1 className="admin-title">Panel de Administración</h1>
+            <p className="admin-subtitle">
+              Gestión completa de contenido y productos
+            </p>
+          </div>
+        </div>
+      </div>
 
       {/* Navegación por pestañas */}
       <nav className="admin-tabs">
@@ -1259,6 +1270,19 @@ export function AdminPanel() {
             </div>
           </div>
         )}
+      </div>
+
+      {/* Footer del Panel */}
+      <div className="admin-footer">
+        <div className="admin-footer-content">
+          <div className="admin-footer-left">
+            <span className="footer-icon">⚙️</span>
+            <span>Panel de Administración - Que Comemos Hoy</span>
+          </div>
+          <div className="admin-footer-right">
+            <span>&copy; 2025 Todos los derechos reservados</span>
+          </div>
+        </div>
       </div>
     </section>
   );
