@@ -12,10 +12,21 @@ export function CarritoProvider({ children }) {
   // Estado para mostrar/ocultar el carrito
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
 
+  // Estado para las notificaciones
+  const [notificacion, setNotificacion] = useState(null);
+
   // Guardar en localStorage cada vez que cambia el carrito
   useEffect(() => {
     localStorage.setItem("carrito", JSON.stringify(carrito));
   }, [carrito]);
+
+  // Función para mostrar notificaciones temporales
+  const mostrarNotificacion = (mensaje, tipo = "success") => {
+    setNotificacion({ mensaje, tipo });
+    setTimeout(() => {
+      setNotificacion(null);
+    }, 3000); // La notificación desaparece después de 3 segundos
+  };
 
   // Agregar producto al carrito
   const agregarAlCarrito = (producto) => {
@@ -25,6 +36,7 @@ export function CarritoProvider({ children }) {
 
       if (productoExistente) {
         // Si existe, aumentar la cantidad
+        mostrarNotificacion(`✅ Se agregó otra unidad de ${producto.producto}`);
         return prev.map((item) =>
           item.id === producto.id
             ? { ...item, cantidad: item.cantidad + 1 }
@@ -32,12 +44,10 @@ export function CarritoProvider({ children }) {
         );
       } else {
         // Si no existe, agregarlo con cantidad 1
+        mostrarNotificacion(`✅ ${producto.producto} agregado al carrito`);
         return [...prev, { ...producto, cantidad: 1 }];
       }
     });
-
-    // Abrir el carrito automáticamente al agregar un producto
-    setMostrarCarrito(true);
   };
 
   // Eliminar producto del carrito
@@ -133,6 +143,7 @@ export function CarritoProvider({ children }) {
     setMostrarCarrito,
     toggleCarrito,
     enviarPorWhatsApp,
+    notificacion,
   };
 
   return (

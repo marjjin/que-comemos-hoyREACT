@@ -557,3 +557,216 @@
     font-size: 16px; /* Evita zoom en iOS */
   }
 }
+
+/* Badges de Estado y Stock */
+.producto-badges {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.badge {
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.badge-activo {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.badge-oculto {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+}
+
+.badge-stock-si {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+}
+
+.badge-stock-no {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* Estilos para FAQs */
+.faq-form-section,
+.faq-list-section {
+  margin-bottom: 2rem;
+}
+
+.faq-form-section h3,
+.faq-list-section h3 {
+  margin-bottom: 1.5rem;
+  color: #667eea;
+  font-size: 1.3rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.form-group small {
+  display: block;
+  margin-top: 0.3rem;
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.faqs-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.faq-card {
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.faq-card:hover {
+  border-color: #667eea;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+}
+
+.faq-card.inactive {
+  opacity: 0.6;
+  background: #f8f9fa;
+}
+
+.faq-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.faq-badges {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.faq-orden-badge {
+  background: #667eea;
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.faq-status-badge {
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.faq-status-badge.active {
+  background: #d4edda;
+  color: #155724;
+}
+
+.faq-status-badge.inactive {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.faq-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.faq-card-content h4 {
+  margin: 0 0 0.8rem;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.faq-question {
+  color: #667eea;
+}
+
+.faq-answer {
+  margin: 0 0 1rem;
+  color: #666;
+  line-height: 1.6;
+}
+
+.faq-keywords {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.faq-keywords strong {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.keywords-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.keyword-tag {
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  padding: 0.3rem 0.8rem;
+  border-radius: 16px;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+/* Responsive para FAQs */
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .faq-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .faq-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}

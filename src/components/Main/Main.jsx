@@ -16,9 +16,11 @@ const supabase = createClient(
 // Recibe como prop un objeto 'producto' con todos los datos del producto
 const ProductCard = ({ producto }) => {
   const { agregarAlCarrito } = useCarrito();
+  const sinStock = producto.stock === false;
 
   return (
     <article className="producto-card">
+      {sinStock && <div className="producto-sin-stock-badge">Sin Stock</div>}
       <h3 className="producto-nombre">{producto.producto}</h3>
       <img
         src={producto.imagen}
@@ -28,11 +30,12 @@ const ProductCard = ({ producto }) => {
       />
       <p className="producto-descripcion">{producto.descripcion}</p>
       <p className="producto-precio">${producto.precio}</p>
-      <button 
-        className="btn-agregar-carrito"
+      <button
+        className={`btn-agregar-carrito ${sinStock ? "btn-disabled" : ""}`}
         onClick={() => agregarAlCarrito(producto)}
+        disabled={sinStock}
       >
-        🛒 Agregar al Carrito
+        {sinStock ? "❌ Sin Stock" : "🛒 Agregar al Carrito"}
       </button>
     </article>
   );
@@ -78,9 +81,12 @@ export function Main() {
             precio,
             descripcion,
             imagen,
+            estado,
+            stock,
             Categoria (categoria)
           `
           )
+          .eq("estado", "activo") // Solo productos activos
           .order("precio"); // Ordena los productos por precio
 
         // Si hay error en la consulta, lo lanza para manejarlo en el catch

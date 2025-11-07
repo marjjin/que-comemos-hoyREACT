@@ -291,6 +291,38 @@ main::before {
   box-shadow: 0 2px 10px rgba(248, 186, 0, 0.3);
 }
 
+/* Badge Sin Stock */
+.producto-sin-stock-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: #ff4444;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  z-index: 10;
+  box-shadow: 0 4px 10px rgba(255, 68, 68, 0.3);
+  animation: pulse 2s ease infinite;
+}
+
+/* Botón Deshabilitado */
+.btn-disabled {
+  background: linear-gradient(135deg, #ccc 0%, #999 100%);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-disabled::before {
+  display: none;
+}
+
 .loading-container,
 .error-container {
   text-align: center;

@@ -40,6 +40,8 @@ export function AdminPanel() {
     producto: "",
     precio: "",
     descripcion: "",
+    estado: "activo", // Estado del producto
+    stock: true, // Disponibilidad de stock
   });
   // Estado para confirmación de borrado de producto
   const [confirmDeleteProdId, setConfirmDeleteProdId] = useState(null);
@@ -48,7 +50,19 @@ export function AdminPanel() {
   const [sliceFile, setSliceFile] = useState(null); // Archivo de imagen para el slice
   const [confirmDeleteSliceId, setConfirmDeleteSliceId] = useState(null); // Confirmación de borrado de slice
   // Estado para controlar la pestaña activa
-  const [tabActiva, setTabActiva] = useState("productos"); // 'productos', 'categorias', 'gestionProductos', 'slice'
+  const [tabActiva, setTabActiva] = useState("productos"); // 'productos', 'categorias', 'gestionProductos', 'slice', 'faqs'
+
+  // Estados para gestión de FAQs
+  const [faqs, setFaqs] = useState([]);
+  const [faqForm, setFaqForm] = useState({
+    pregunta: "",
+    respuesta: "",
+    palabras_clave: "",
+    orden: 0,
+    activo: true,
+  });
+  const [editFaqId, setEditFaqId] = useState(null);
+  const [confirmDeleteFaqId, setConfirmDeleteFaqId] = useState(null);
 
   // Iniciar edición de producto
   function startEditProducto(prod) {
@@ -57,6 +71,8 @@ export function AdminPanel() {
       producto: prod.producto,
       precio: prod.precio,
       descripcion: prod.descripcion,
+      estado: prod.estado || "activo",
+      stock: prod.stock !== false, // Por defecto true si no existe
     });
   }
 
@@ -75,12 +91,20 @@ export function AdminPanel() {
         producto: editProdForm.producto,
         precio: Number(editProdForm.precio),
         descripcion: editProdForm.descripcion,
+        estado: editProdForm.estado,
+        stock: editProdForm.stock,
       })
       .eq("id", editProdId);
     if (!error) {
       setMensaje("Producto editado correctamente.");
       setEditProdId(null);
-      setEditProdForm({ producto: "", precio: "", descripcion: "" });
+      setEditProdForm({
+        producto: "",
+        precio: "",
+        descripcion: "",
+        estado: "activo",
+        stock: true,
+      });
       // Refresca productos filtrados
       if (filtroCategoria) fetchProductosFiltrados(filtroCategoria);
     } else {
@@ -141,9 +165,6 @@ export function AdminPanel() {
     }
 
     // Subir imagen a Supabase Storage
-    // IMPORTANTE: Asegúrate de crear el bucket en Supabase Storage
-    // Ve a: Supabase Dashboard > Storage > Create bucket
-    // Nombre del bucket: "image" (debe ser público)
     const bucket = import.meta.env.VITE_SUPABASE_BUCKET || "image";
     const filePath = `${Date.now()}_${file.name}`;
 
@@ -182,6 +203,8 @@ export function AdminPanel() {
         descripcion: form.descripcion,
         imagen: publicUrl,
         id_categoria: categoriaSeleccionada.id,
+        estado: "activo", // Por defecto activo
+        stock: true, // Por defecto con stock
       },
     ]);
     if (error) {
@@ -206,15 +229,29 @@ export function AdminPanel() {
   // Filtrar productos por categoría
   // Consulta los productos de la categoría seleccionada
   async function fetchProductosFiltrados(categoria) {
+    // Primero obtenemos el ID de la categoría seleccionada
+    const categoriaSeleccionada = categorias.find(
+      (cat) => cat.categoria === categoria
+    );
+
+    if (!categoriaSeleccionada) {
+      setProductosFiltrados([]);
+      return;
+    }
+
     const { data, error } = await supabase
       .from("producto")
       .select(
-        "id, producto, precio, descripcion, imagen, Categoria (categoria)"
+        "id, producto, precio, descripcion, imagen, estado, stock, Categoria (categoria)"
       )
-      .eq("Categoria.categoria", categoria);
+      .eq("id_categoria", categoriaSeleccionada.id)
+      .order("producto");
+
     if (!error && data) {
+      console.log("Productos filtrados:", data);
       setProductosFiltrados(data);
     } else {
+      console.error("Error al filtrar productos:", error);
       setProductosFiltrados([]);
     }
   }
@@ -393,6 +430,147 @@ export function AdminPanel() {
     }
   }
 
+  // ===== FUNCIONES PARA GESTIÓN DE FAQs =====
+
+  // Cargar FAQs desde Supabase
+  useEffect(() => {
+    async function fetchFAQs() {
+      const { data, error } = await supabase
+        .from("faq")
+        .select("*")
+        .order("orden", { ascending: true });
+      if (!error && data) {
+        setFaqs(data);
+      }
+    }
+    if (tabActiva === "faqs") {
+      fetchFAQs();
+    }
+  }, [tabActiva]);
+
+  // Manejar cambios en el formulario de FAQ
+  function handleFaqChange(e) {
+    const { name, value, type, checked } = e.target;
+    setFaqForm({
+      ...faqForm,
+      [name]: type === "checkbox" ? checked : value,
+    });
+  }
+
+  // Agregar nueva FAQ
+  async function handleAddFaq(e) {
+    e.preventDefault();
+    if (!faqForm.pregunta.trim() || !faqForm.respuesta.trim()) {
+      setMensaje("Completa la pregunta y la respuesta.");
+      return;
+    }
+
+    const { error } = await supabase.from("faq").insert([
+      {
+        pregunta: faqForm.pregunta.trim(),
+        respuesta: faqForm.respuesta.trim(),
+        palabras_clave: faqForm.palabras_clave.trim(),
+        orden: Number(faqForm.orden),
+        activo: faqForm.activo,
+      },
+    ]);
+
+    if (!error) {
+      setMensaje("Pregunta frecuente agregada correctamente.");
+      setFaqForm({
+        pregunta: "",
+        respuesta: "",
+        palabras_clave: "",
+        orden: 0,
+        activo: true,
+      });
+      // Recargar FAQs
+      const { data } = await supabase
+        .from("faq")
+        .select("*")
+        .order("orden", { ascending: true });
+      setFaqs(data);
+    } else {
+      setMensaje("Error al agregar FAQ: " + error.message);
+    }
+  }
+
+  // Iniciar edición de FAQ
+  function startEditFaq(faq) {
+    setEditFaqId(faq.id);
+    setFaqForm({
+      pregunta: faq.pregunta,
+      respuesta: faq.respuesta,
+      palabras_clave: faq.palabras_clave || "",
+      orden: faq.orden,
+      activo: faq.activo,
+    });
+  }
+
+  // Guardar edición de FAQ
+  async function handleEditFaq(e) {
+    e.preventDefault();
+    const { error } = await supabase
+      .from("faq")
+      .update({
+        pregunta: faqForm.pregunta.trim(),
+        respuesta: faqForm.respuesta.trim(),
+        palabras_clave: faqForm.palabras_clave.trim(),
+        orden: Number(faqForm.orden),
+        activo: faqForm.activo,
+      })
+      .eq("id", editFaqId);
+
+    if (!error) {
+      setMensaje("Pregunta frecuente editada correctamente.");
+      setEditFaqId(null);
+      setFaqForm({
+        pregunta: "",
+        respuesta: "",
+        palabras_clave: "",
+        orden: 0,
+        activo: true,
+      });
+      // Recargar FAQs
+      const { data } = await supabase
+        .from("faq")
+        .select("*")
+        .order("orden", { ascending: true });
+      setFaqs(data);
+    } else {
+      setMensaje("Error al editar FAQ: " + error.message);
+    }
+  }
+
+  // Eliminar FAQ con confirmación
+  function handleDeleteFaq(id) {
+    setConfirmDeleteFaqId(id);
+  }
+
+  // Confirmar y eliminar FAQ
+  async function confirmDeleteFaq(id) {
+    const { error } = await supabase.from("faq").delete().eq("id", id);
+    if (!error) {
+      setMensaje("Pregunta frecuente eliminada.");
+      setFaqs(faqs.filter((f) => f.id !== id));
+    } else {
+      setMensaje("Error al eliminar FAQ: " + error.message);
+    }
+    setConfirmDeleteFaqId(null);
+  }
+
+  // Cancelar edición de FAQ
+  function cancelEditFaq() {
+    setEditFaqId(null);
+    setFaqForm({
+      pregunta: "",
+      respuesta: "",
+      palabras_clave: "",
+      orden: 0,
+      activo: true,
+    });
+  }
+
   // Renderizado del panel de administración con pestañas
   // Incluye: formulario de producto, gestión de categorías, filtro y edición/eliminación de productos, gestión de slice
   return (
@@ -426,6 +604,12 @@ export function AdminPanel() {
           onClick={() => setTabActiva("slice")}
         >
           🎨 Banner (Slice)
+        </button>
+        <button
+          className={`admin-tab ${tabActiva === "faqs" ? "active" : ""}`}
+          onClick={() => setTabActiva("faqs")}
+        >
+          💬 Preguntas Frecuentes
         </button>
       </nav>
 
@@ -684,6 +868,43 @@ export function AdminPanel() {
                                   required
                                 />
                               </div>
+                              <div className="form-group">
+                                <label>Estado del Producto</label>
+                                <select
+                                  name="estado"
+                                  value={editProdForm.estado}
+                                  onChange={handleEditProdChange}
+                                  required
+                                >
+                                  <option value="activo">
+                                    ✅ Activo (Visible en el menú)
+                                  </option>
+                                  <option value="oculto">
+                                    👁️ Oculto (No visible, pero guardado)
+                                  </option>
+                                </select>
+                              </div>
+                              <div className="form-group">
+                                <label>Disponibilidad de Stock</label>
+                                <select
+                                  name="stock"
+                                  value={editProdForm.stock.toString()}
+                                  onChange={(e) =>
+                                    setEditProdForm({
+                                      ...editProdForm,
+                                      stock: e.target.value === "true",
+                                    })
+                                  }
+                                  required
+                                >
+                                  <option value="true">
+                                    ✅ Con Stock (Se puede agregar al carrito)
+                                  </option>
+                                  <option value="false">
+                                    ❌ Sin Stock (No se puede agregar)
+                                  </option>
+                                </select>
+                              </div>
                               <div className="form-actions">
                                 <button type="submit" className="btn-save">
                                   Guardar
@@ -696,6 +917,8 @@ export function AdminPanel() {
                                       producto: "",
                                       precio: "",
                                       descripcion: "",
+                                      estado: "activo",
+                                      stock: true,
                                     });
                                   }}
                                   className="btn-cancel"
@@ -720,6 +943,26 @@ export function AdminPanel() {
                             <p className="producto-descripcion">
                               {prod.descripcion}
                             </p>
+                            <div className="producto-badges">
+                              <span
+                                className={`badge badge-${
+                                  prod.estado || "activo"
+                                }`}
+                              >
+                                {prod.estado === "oculto"
+                                  ? "👁️ Oculto"
+                                  : "✅ Activo"}
+                              </span>
+                              <span
+                                className={`badge badge-stock-${
+                                  prod.stock !== false ? "si" : "no"
+                                }`}
+                              >
+                                {prod.stock !== false
+                                  ? "📦 Con Stock"
+                                  : "❌ Sin Stock"}
+                              </span>
+                            </div>
                           </div>
                           <div className="producto-actions">
                             <button
@@ -822,6 +1065,186 @@ export function AdminPanel() {
                             </button>
                             <button
                               onClick={() => setConfirmDeleteSliceId(null)}
+                              className="btn-confirm-no"
+                            >
+                              No
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* PESTAÑA: GESTIÓN DE FAQs */}
+        {tabActiva === "faqs" && (
+          <div className="admin-section">
+            <h2>Gestión de Preguntas Frecuentes (FAQ)</h2>
+
+            {/* Formulario para agregar/editar FAQ */}
+            <div className="faq-form-section">
+              <h3>{editFaqId ? "Editar" : "Agregar"} Pregunta Frecuente</h3>
+              <form
+                onSubmit={editFaqId ? handleEditFaq : handleAddFaq}
+                className="admin-form"
+              >
+                <div className="form-group">
+                  <label>Pregunta*</label>
+                  <input
+                    type="text"
+                    name="pregunta"
+                    value={faqForm.pregunta}
+                    onChange={handleFaqChange}
+                    placeholder="¿Cuál es el horario de atención?"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Respuesta*</label>
+                  <textarea
+                    name="respuesta"
+                    value={faqForm.respuesta}
+                    onChange={handleFaqChange}
+                    placeholder="Atendemos de lunes a sábado de 11:00 a 23:00 hs"
+                    rows="4"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>
+                    Palabras Clave (separadas por comas)
+                    <small>
+                      Ayudan al bot a encontrar la respuesta correcta
+                    </small>
+                  </label>
+                  <input
+                    type="text"
+                    name="palabras_clave"
+                    value={faqForm.palabras_clave}
+                    onChange={handleFaqChange}
+                    placeholder="horario, hora, abierto, cerrado, atención"
+                  />
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Orden de Aparición</label>
+                    <input
+                      type="number"
+                      name="orden"
+                      value={faqForm.orden}
+                      onChange={handleFaqChange}
+                      min="0"
+                      placeholder="0"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label className="checkbox-label">
+                      <input
+                        type="checkbox"
+                        name="activo"
+                        checked={faqForm.activo}
+                        onChange={handleFaqChange}
+                      />
+                      Activa (visible en el chat)
+                    </label>
+                  </div>
+                </div>
+
+                <div className="form-actions">
+                  <button type="submit" className="btn-submit">
+                    {editFaqId ? "Guardar Cambios" : "Agregar FAQ"}
+                  </button>
+                  {editFaqId && (
+                    <button
+                      type="button"
+                      onClick={cancelEditFaq}
+                      className="btn-cancel"
+                    >
+                      Cancelar
+                    </button>
+                  )}
+                </div>
+              </form>
+            </div>
+
+            {/* Lista de FAQs */}
+            <div className="faq-list-section">
+              <h3>Lista de Preguntas Frecuentes</h3>
+              {faqs.length === 0 ? (
+                <p className="empty-message">
+                  No hay preguntas frecuentes creadas aún.
+                </p>
+              ) : (
+                <div className="faqs-container">
+                  {faqs.map((faq) => (
+                    <div
+                      key={faq.id}
+                      className={`faq-card ${!faq.activo ? "inactive" : ""}`}
+                    >
+                      <div className="faq-card-header">
+                        <div className="faq-badges">
+                          <span className="faq-orden-badge">#{faq.orden}</span>
+                          <span
+                            className={`faq-status-badge ${
+                              faq.activo ? "active" : "inactive"
+                            }`}
+                          >
+                            {faq.activo ? "✅ Activa" : "⭕ Inactiva"}
+                          </span>
+                        </div>
+                        <div className="faq-actions">
+                          <button
+                            onClick={() => startEditFaq(faq)}
+                            className="btn-edit"
+                          >
+                            ✏️ Editar
+                          </button>
+                          <button
+                            onClick={() => handleDeleteFaq(faq.id)}
+                            className="btn-delete"
+                          >
+                            🗑️ Eliminar
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="faq-card-content">
+                        <h4 className="faq-question">❓ {faq.pregunta}</h4>
+                        <p className="faq-answer">💬 {faq.respuesta}</p>
+                        {faq.palabras_clave && (
+                          <div className="faq-keywords">
+                            <strong>🔑 Palabras clave:</strong>
+                            <div className="keywords-tags">
+                              {faq.palabras_clave.split(",").map((kw, idx) => (
+                                <span key={idx} className="keyword-tag">
+                                  {kw.trim()}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {confirmDeleteFaqId === faq.id && (
+                        <div className="admin-confirm-delete">
+                          ¿Seguro que deseas eliminar esta pregunta?
+                          <div className="confirm-actions">
+                            <button
+                              onClick={() => confirmDeleteFaq(faq.id)}
+                              className="btn-confirm-yes"
+                            >
+                              Sí
+                            </button>
+                            <button
+                              onClick={() => setConfirmDeleteFaqId(null)}
                               className="btn-confirm-no"
                             >
                               No

@@ -5,6 +5,8 @@ import { Footer } from "./components/Footer/Footer";
 import { AdminPanel } from "./components/AdminPanel/AdminPanel";
 import { CarritoProvider } from "./context/CarritoContext";
 import { Carrito } from "./components/Carrito/Carrito";
+import { Notificacion } from "./components/Notificacion/Notificacion";
+import { ChatBot } from "./components/ChatBot/ChatBot";
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
         </Routes>
         <Footer />
         <Carrito />
+        <Notificacion />
+        <ChatBot />
       </BrowserRouter>
     </CarritoProvider>
   );
